@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "b47RVIDbg0triAu9xrAhXtW3NukmBd4Nr992FA90cdTvOWOtGAJZiGHxDVYZVCr/kFypoemuxe6zRX3s2eybYQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\jansson.oscar\\Documents\\spelprojekt\\Vinterprojectet\\Vinterprojectet\\Vinterprojectet.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\jansson.oscar\\.nuget\\packages\\raylib-cs\\3.7.0.1\\raylib-cs.3.7.0.1.nupkg.sha512",
+    "C:\\Users\\jansson.oscar\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}
