@@ -3,6 +3,7 @@ using Raylib_cs;
 using System.Numerics;
 using System.Collections.Generic;
 
+
 Random generator = new Random();
 Raylib.InitWindow(1200, 750, "2D-topdown game");
 
@@ -17,6 +18,10 @@ bool lvl1 = true;
 bool lvl2 = false;
 bool toutch = true;
 int score = 0;
+
+// kollar senaste directionen och gör default direction till höger. DÅ den är x= 1 y = 0
+Vector2 lastPlayerDirection = new Vector2(1, 0);
+
 
 
 Rectangle playerRect = new Rectangle(400, 300, playerImage.width, playerImage.height);
@@ -43,7 +48,6 @@ while (!Raylib.WindowShouldClose())
         Raylib.DrawRectangleRec(exit, Color.BLACK);
 
 
-
         Raylib.DrawRectangleRec(r2, Color.MAGENTA);
         // Raylib.DrawRectangleRec(playerRect,Color.WHITE);
         Raylib.DrawTexture(playerImage, (int)playerRect.x, (int)playerRect.y, Color.WHITE);
@@ -60,10 +64,11 @@ while (!Raylib.WindowShouldClose())
             Bullet b1 = new Bullet();
             b1.rect = new Rectangle(playerRect.x, playerRect.y, 50, 30);
             b1.isAlive = true;
+            b1.direction = lastPlayerDirection;
             bullets.Add(b1);
 
         }
-
+// En for loop om att kolla listan och rita skott och kolla vilken riktning dom är/får dom att röra sig
         for (int i = 0; i < bullets.Count; i++)
         {
             bullets[i].Update();
@@ -85,6 +90,12 @@ while (!Raylib.WindowShouldClose())
             Vector2 movement = ReadMovement(speed);
             playerRect.x += movement.X;
             playerRect.y += movement.Y;
+            // Den under uppdaterar för att se om jag har rtört mig
+            if (movement.Length() > 0)
+            {
+                // Den här gör vectorn till 1 alltså normalizar
+                lastPlayerDirection = Vector2.Normalize(movement);
+            }
         }
 
         if (playerRect.x >= 1200)
@@ -188,7 +199,11 @@ while (!Raylib.WindowShouldClose())
 static Vector2 ReadMovement(float speed)
 {
     Vector2 movement = new Vector2();
-    if (Raylib.IsKeyDown(KeyboardKey.KEY_S)) movement.Y += speed;
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_S))
+    {
+        movement.Y += speed;
+
+    }
     if (Raylib.IsKeyDown(KeyboardKey.KEY_D)) movement.X += speed;
 
     if (Raylib.IsKeyDown(KeyboardKey.KEY_A)) movement.X -= speed;
