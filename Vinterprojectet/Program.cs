@@ -2,6 +2,8 @@
 using Raylib_cs;
 using System.Numerics;
 using System.Collections.Generic;
+using System.Threading;
+
 
 
 Random generator = new Random();
@@ -10,6 +12,7 @@ Raylib.InitWindow(1200, 750, "2D-topdown game");
 Raylib.SetTargetFPS(60);
 
 Texture2D playerImage = Raylib.LoadTexture("gubbe(2).png");
+Texture2D enemyImage = Raylib.LoadTexture("zombe.png");
 Texture2D background = Raylib.LoadTexture("Stage_Basement_room5.png");
 Texture2D background2 = Raylib.LoadTexture("Stage_Basement_room5.png");
 
@@ -23,7 +26,8 @@ int score = 0;
 // kollar senaste directionen och gör default direction till höger. DÅ den är x= 1 y = 0
 Vector2 lastPlayerDirection = new Vector2(1, 0);
 
-
+int timer = 0;
+int timerMax = 60;
 
 Rectangle playerRect = new Rectangle(400, 300, playerImage.width, playerImage.height);
 
@@ -153,7 +157,7 @@ while (!Raylib.WindowShouldClose())
         Raylib.ClearBackground(Color.BEIGE);
         Raylib.DrawTexture(background2, 0, 0, Color.WHITE);
 
-        Raylib.DrawText($"{score}", 75, 10, 100, Color.BLACK);
+        // Raylib.DrawText($"{score}", 75, 10, 100, Color.BLACK);
         Raylib.DrawRectangleRec(r2, Color.MAGENTA);
 
 
@@ -198,13 +202,35 @@ while (!Raylib.WindowShouldClose())
 
         bullets.RemoveAll(x => x.isAlive == false);
 
+        if (score < 10)
+        {
+            timer++;
+            if (timer > timerMax)
+            {
+                timer = 0;
+
+                ENEMY e1 = new ENEMY();
+                e1.erect = new Rectangle(570, 300, 100, 50);
+                enemy.Add(e1);
+            }
+
+        }
+
+        for (int i = 0; i < enemy.Count; i++)
+        {
+            enemy[i].draw();
+            enemy[i].emovement();
+        }
+
+
+
 
 
 
 
         if (playerRect.x <= 90)
         {
-           
+
             playerRect.x = 100 + playerRect.height;
         }
 
