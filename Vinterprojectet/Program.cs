@@ -10,7 +10,8 @@ Raylib.InitWindow(1200, 750, "2D-topdown game");
 Raylib.SetTargetFPS(60);
 
 Texture2D playerImage = Raylib.LoadTexture("gubbe(2).png");
-Texture2D background = Raylib.LoadTexture("Stage_Basement_room2.png");
+Texture2D background = Raylib.LoadTexture("Stage_Basement_room5.png");
+Texture2D background2 = Raylib.LoadTexture("Stage_Basement_room5.png");
 
 float speed = 20f;
 bool death = false;
@@ -31,6 +32,7 @@ Rectangle r2 = new Rectangle(200, 200, 80, 100);
 
 
 List<Bullet> bullets = new List<Bullet>();
+List<ENEMY> enemy = new List<ENEMY>();
 
 while (!Raylib.WindowShouldClose())
 {
@@ -68,7 +70,7 @@ while (!Raylib.WindowShouldClose())
             bullets.Add(b1);
 
         }
-// En for loop om att kolla listan och rita skott och kolla vilken riktning dom är/får dom att röra sig
+        // En for loop om att kolla listan och rita skott och kolla vilken riktning dom är/får dom att röra sig
         for (int i = 0; i < bullets.Count; i++)
         {
             bullets[i].Update();
@@ -100,10 +102,8 @@ while (!Raylib.WindowShouldClose())
 
         if (playerRect.x >= 1200)
         {
-            lvl1 = false;
-            lvl2 = true;
-            playerRect.y = 300;
-            playerRect.x = 300;
+
+
         }
         if (playerRect.x <= 0)
         {
@@ -111,7 +111,10 @@ while (!Raylib.WindowShouldClose())
         }
         if (playerRect.y <= 0)
         {
-            playerRect.y = 0;
+            lvl1 = false;
+            lvl2 = true;
+            playerRect.y = 750 - playerRect.height;
+            playerRect.x = 600;
         }
         if (playerRect.y + playerRect.height >= 750)
         {
@@ -119,10 +122,37 @@ while (!Raylib.WindowShouldClose())
         }
         Raylib.EndDrawing();
     }
+
+
+
+
+    // Rum 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     else if (lvl2 == true)
     {
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Color.BEIGE);
+        Raylib.DrawTexture(background2, 0, 0, Color.WHITE);
+
         Raylib.DrawText($"{score}", 75, 10, 100, Color.BLACK);
         Raylib.DrawRectangleRec(r2, Color.MAGENTA);
 
@@ -142,34 +172,62 @@ while (!Raylib.WindowShouldClose())
             Vector2 movement = ReadMovement(speed);
             playerRect.x += movement.X;
             playerRect.y += movement.Y;
+
+            if (movement.Length() > 0)
+            {
+                // Den här gör vectorn till 1 alltså normalizar
+                lastPlayerDirection = Vector2.Normalize(movement);
+            }
+        }
+
+        if (Raylib.IsKeyPressed(KeyboardKey.KEY_H))
+        {
+            Bullet b1 = new Bullet();
+            b1.rect = new Rectangle(playerRect.x, playerRect.y, 50, 30);
+            b1.isAlive = true;
+            b1.direction = lastPlayerDirection;
+            bullets.Add(b1);
+
+        }
+        // En for loop om att kolla listan och rita skott och kolla vilken riktning dom är/får dom att röra sig
+        for (int i = 0; i < bullets.Count; i++)
+        {
+            bullets[i].Update();
+            bullets[i].Draw();
+        }
+
+        bullets.RemoveAll(x => x.isAlive == false);
+
+
+
+
+
+        if (playerRect.x <= 90)
+        {
+           
+            playerRect.x = 100 + playerRect.height;
         }
 
 
+        if (playerRect.x >= 1200)
+        {
 
+            playerRect.x = 1100 - playerRect.width;
 
+        }
         if (playerRect.x <= 0)
         {
-            lvl1 = true;
-            lvl2 = false;
-            playerRect.x = 600 - playerRect.width;
+            playerRect.x = 0;
         }
-
-
         if (playerRect.y <= 0)
         {
-            playerRect.y = 0;
-        }
 
-        if (playerRect.y + playerRect.height >= 600)
+            playerRect.y = 750 - playerRect.height;
+        }
+        if (playerRect.y + playerRect.height >= 750)
         {
-            playerRect.y = 600 - playerRect.height;
+            playerRect.y = 750 - playerRect.height;
         }
-
-        if (playerRect.x + playerRect.width >= 800)
-        {
-            playerRect.x = 800 - playerRect.width;
-        }
-
         Raylib.EndDrawing();
 
     }
