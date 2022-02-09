@@ -13,6 +13,8 @@ Raylib.SetTargetFPS(60);
 
 Texture2D playerImage = Raylib.LoadTexture("gubbe(2).png");
 Texture2D enemyImage = Raylib.LoadTexture("zombe.png");
+Texture2D coin = Raylib.LoadTexture("coin.png");
+Texture2D key = Raylib.LoadTexture("KEY.png");
 Texture2D background = Raylib.LoadTexture("Stage_Basement_room5.png");
 Texture2D background2 = Raylib.LoadTexture("Stage_Basement_room5.png");
 
@@ -21,7 +23,10 @@ bool death = false;
 bool lvl1 = true;
 bool lvl2 = false;
 bool toutch = true;
+bool hasKey = false;
+bool hasKey2 = false;
 int score = 0;
+int score2 = 0;
 
 // kollar senaste directionen och gör default direction till höger. DÅ den är x= 1 y = 0
 Vector2 lastPlayerDirection = new Vector2(1, 0);
@@ -33,10 +38,11 @@ Rectangle playerRect = new Rectangle(400, 300, playerImage.width, playerImage.he
 
 Rectangle exit = new Rectangle(200, 300, 80, 100);
 Rectangle r2 = new Rectangle(200, 200, 80, 100);
+Rectangle keyrect = new Rectangle(600, 375, 200, 100);
 
 
 List<Bullet> bullets = new List<Bullet>();
-List<ENEMY> enemy = new List<ENEMY>();
+List<ENEMY> enemies = new List<ENEMY>();
 
 while (!Raylib.WindowShouldClose())
 {
@@ -48,27 +54,39 @@ while (!Raylib.WindowShouldClose())
         Raylib.DrawTexture(background, 0, 0, Color.WHITE);
         Raylib.ClearBackground(Color.BLUE);
 
-        Color exitColor = Color.BLACK;
 
 
-        Raylib.DrawRectangleRec(exit, Color.BLACK);
+        // Raylib.DrawRectangleRec(exit, Color.BLACK);
 
 
-        Raylib.DrawRectangleRec(r2, Color.MAGENTA);
-        // Raylib.DrawRectangleRec(playerRect,Color.WHITE);
+        Raylib.DrawTexture(coin, (int)r2.x, (int)r2.y, Color.WHITE);
         Raylib.DrawTexture(playerImage, (int)playerRect.x, (int)playerRect.y, Color.WHITE);
-        Raylib.DrawText($"{score}", 75, 10, 100, Color.BLACK);
+        Raylib.DrawText($"{score}", 75, 10, 100, Color.WHITE);
 
-        if (toutch == true && Raylib.CheckCollisionRecs(exit, playerRect))
+        // if (toutch == true && Raylib.CheckCollisionRecs(exit, playerRect))
+        // {
+        //     death = true;
+        //     lvl1 = false;
+        // }
+
+        if (score >= 5 && hasKey == false)
         {
-            death = true;
-            lvl1 = false;
+            Raylib.DrawTexture(key, 550, 400, Color.WHITE);
+
+            if (Raylib.CheckCollisionRecs(keyrect, playerRect))
+            {
+                hasKey = true;
+            }
         }
+
+
+
+
 
         if (Raylib.IsKeyPressed(KeyboardKey.KEY_H))
         {
             Bullet b1 = new Bullet();
-            b1.rect = new Rectangle(playerRect.x, playerRect.y, 50, 30);
+            b1.brect = new Rectangle(playerRect.x, playerRect.y, 50, 30);
             b1.isAlive = true;
             b1.direction = lastPlayerDirection;
             bullets.Add(b1);
@@ -115,10 +133,14 @@ while (!Raylib.WindowShouldClose())
         }
         if (playerRect.y <= 0)
         {
-            lvl1 = false;
-            lvl2 = true;
-            playerRect.y = 750 - playerRect.height;
-            playerRect.x = 600;
+            if (hasKey == true)
+            {
+
+                lvl1 = false;
+                lvl2 = true;
+                playerRect.y = 750 - playerRect.height;
+                playerRect.x = 600;
+            }
         }
         if (playerRect.y + playerRect.height >= 750)
         {
@@ -153,23 +175,15 @@ while (!Raylib.WindowShouldClose())
 
     else if (lvl2 == true)
     {
+
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Color.BEIGE);
         Raylib.DrawTexture(background2, 0, 0, Color.WHITE);
-
-        // Raylib.DrawText($"{score}", 75, 10, 100, Color.BLACK);
-        Raylib.DrawRectangleRec(r2, Color.MAGENTA);
-
-
+        Raylib.DrawText($"{score2}", 75, 10, 100, Color.WHITE);
+        Raylib.DrawTexture(coin, (int)r2.x, (int)r2.y, Color.WHITE);
         Raylib.DrawTexture(playerImage, (int)playerRect.x, (int)playerRect.y, Color.WHITE);
 
-        if (Raylib.CheckCollisionRecs(r2, playerRect))
-        {
-            int cord = generator.Next(800);
-            int cord2 = generator.Next(600);
-            r2 = new Rectangle(cord, cord2, 80, 100);
-            score++;
-        }
+
 
         if (lvl1 == true || lvl2 == true)
         {
@@ -184,11 +198,21 @@ while (!Raylib.WindowShouldClose())
             }
         }
 
+             if (Raylib.CheckCollisionRecs(r2, playerRect))
+        {
+            int cord = generator.Next(800);
+            int cord2 = generator.Next(600);
+            r2 = new Rectangle(cord, cord2, 80, 100);
+            score2++;
+
+        }
+
         if (Raylib.IsKeyPressed(KeyboardKey.KEY_H))
         {
             Bullet b1 = new Bullet();
-            b1.rect = new Rectangle(playerRect.x, playerRect.y, 50, 30);
+            b1.brect = new Rectangle(playerRect.x, playerRect.y, 50, 30);
             b1.isAlive = true;
+            // så att skottet skuts där spelaren kollar
             b1.direction = lastPlayerDirection;
             bullets.Add(b1);
 
@@ -201,25 +225,65 @@ while (!Raylib.WindowShouldClose())
         }
 
         bullets.RemoveAll(x => x.isAlive == false);
-
-        if (score < 10)
+        // vilket gör så att den kommer sluta spwana fiender när jag har 15 score 
+        if (score2 < 15)
         {
+
+            // en timer som funkar att den gör +1 varje frame och när den har nått timerMax 
+            // så spawnar den en fiende var i det här fallet var 60 frame
             timer++;
             if (timer > timerMax)
             {
                 timer = 0;
+                int spawn = generator.Next(700);
 
                 ENEMY e1 = new ENEMY();
-                e1.erect = new Rectangle(570, 300, 100, 50);
-                enemy.Add(e1);
-            }
+                e1.erect = new Rectangle(spawn, spawn, 100, 50);
+                enemies.Add(e1);
 
+
+            }
         }
 
-        for (int i = 0; i < enemy.Count; i++)
+        if (score2 >= 1 && hasKey2 == false)
         {
-            enemy[i].draw();
-            enemy[i].emovement();
+            Raylib.DrawTexture(key, 550, 400, Color.WHITE);
+
+            if (Raylib.CheckCollisionRecs(keyrect, playerRect))
+            {
+                hasKey2 = true;
+            }
+        }
+
+        // kollar igenom hela ENEMY listan om en något ifrån listan Bullet nuddar varandra, isf +1 poäng
+        foreach (ENEMY enemy in enemies)
+        {
+            foreach (Bullet bullet in bullets)
+            {
+                if (Raylib.CheckCollisionRecs(enemy.erect, bullet.brect))
+                {
+                    enemy.Edead = true;
+                    score2++;
+                }
+            }
+        }
+
+        foreach (ENEMY enemy in enemies)
+        {
+            if (Raylib.CheckCollisionRecs(playerRect, enemy.erect))
+            {
+                death = true;
+                lvl2 = false;
+            }
+        }
+
+        // den här kollar om det i listen har fått att Edead == true
+        enemies.RemoveAll(e => e.Edead == true);
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            enemies[i].draw();
+            enemies[i].emovement();
         }
 
 
@@ -234,28 +298,15 @@ while (!Raylib.WindowShouldClose())
             playerRect.x = 100 + playerRect.height;
         }
 
+        // väggar
+        if (playerRect.x >= 1200) { playerRect.x = 1100 - playerRect.width; }
+        if (playerRect.x <= 0) { playerRect.x = 0; }
+        if (playerRect.y <= 0) { playerRect.y = 750 - playerRect.height; }
+        if (playerRect.y + playerRect.height >= 750) { playerRect.y = 750 - playerRect.height; }
 
-        if (playerRect.x >= 1200)
-        {
 
-            playerRect.x = 1100 - playerRect.width;
 
-        }
-        if (playerRect.x <= 0)
-        {
-            playerRect.x = 0;
-        }
-        if (playerRect.y <= 0)
-        {
-
-            playerRect.y = 750 - playerRect.height;
-        }
-        if (playerRect.y + playerRect.height >= 750)
-        {
-            playerRect.y = 750 - playerRect.height;
-        }
         Raylib.EndDrawing();
-
     }
 
     else if (death == true)
@@ -265,10 +316,14 @@ while (!Raylib.WindowShouldClose())
         Raylib.DrawText($"U DIED", 100, 100, 100, Color.WHITE);
         if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE))
         {
+
             death = false;
             lvl1 = true;
             score = 0;
+            score2 = 0;
             playerRect = new Rectangle(400, 300, playerImage.width, playerImage.height);
+            enemies.RemoveAll(e => e.Edead == false);
+            hasKey = false;
 
         }
 

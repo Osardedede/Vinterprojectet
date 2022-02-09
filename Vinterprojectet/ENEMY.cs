@@ -1,8 +1,6 @@
 using System;
-using System.Threading;
 using System.Numerics;
 using Raylib_cs;
-using System.Collections.Generic;
 
 
 public class ENEMY
@@ -10,10 +8,12 @@ public class ENEMY
 
     public Rectangle erect;
 
-    float speed = 3;
 
     Texture2D enemyImage = Raylib.LoadTexture("zombe.png");
     Random generator = new Random();
+
+    public bool Edead;
+
 
     Vector2 direction;
     public ENEMY()
@@ -38,17 +38,21 @@ public class ENEMY
 
     }
 
+    float speed = 3;
     public void emovement()
     {
-        // int speed = generator.Next(30, 100);
 
         erect.x += direction.X * speed;
         erect.y += direction.Y * speed;
 
-
+        // så att dom stuttsar
         if (erect.x < 0 || erect.x > Raylib.GetScreenWidth() - erect.width)
         {
             direction.X = -direction.X;
+        }
+        if (erect.y < 0 || erect.y > Raylib.GetScreenHeight() - erect.height)
+        {
+            direction.Y = -direction.Y;
         }
     }
 }
