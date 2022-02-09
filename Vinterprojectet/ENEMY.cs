@@ -38,7 +38,7 @@ public class ENEMY
 
     }
 
-    float speed = 3;
+    float speed = 2;
     public void emovement()
     {
 

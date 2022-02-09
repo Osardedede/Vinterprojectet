@@ -15,14 +15,13 @@ Texture2D playerImage = Raylib.LoadTexture("gubbe(2).png");
 Texture2D enemyImage = Raylib.LoadTexture("zombe.png");
 Texture2D coin = Raylib.LoadTexture("coin.png");
 Texture2D key = Raylib.LoadTexture("KEY.png");
-Texture2D background = Raylib.LoadTexture("Stage_Basement_room5.png");
-Texture2D background2 = Raylib.LoadTexture("Stage_Basement_room5.png");
+Texture2D background = Raylib.LoadTexture("Stage_Basement_room1.png");
+Texture2D background2 = Raylib.LoadTexture("Room2.png");
 
-float speed = 20f;
+float speed = 10f;
 bool death = false;
 bool lvl1 = true;
 bool lvl2 = false;
-bool toutch = true;
 bool hasKey = false;
 bool hasKey2 = false;
 int score = 0;
@@ -36,10 +35,13 @@ int timerMax = 60;
 
 Rectangle playerRect = new Rectangle(400, 300, playerImage.width, playerImage.height);
 
-Rectangle exit = new Rectangle(200, 300, 80, 100);
 Rectangle r2 = new Rectangle(200, 200, 80, 100);
 Rectangle keyrect = new Rectangle(600, 375, 200, 100);
-
+List<int> espawn = new List<int>();
+espawn.Add(169);
+espawn.Add(825);
+espawn.Add(475);
+espawn.Add(475);
 
 List<Bullet> bullets = new List<Bullet>();
 List<ENEMY> enemies = new List<ENEMY>();
@@ -50,32 +52,37 @@ while (!Raylib.WindowShouldClose())
     if (lvl1 == true)
     {
 
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT))
+        {
+            speed = 15f;
+        }
+        else
+        {
+            speed = 10f;
+        }
+
         Raylib.BeginDrawing();
         Raylib.DrawTexture(background, 0, 0, Color.WHITE);
         Raylib.ClearBackground(Color.BLUE);
 
 
 
-        // Raylib.DrawRectangleRec(exit, Color.BLACK);
 
 
         Raylib.DrawTexture(coin, (int)r2.x, (int)r2.y, Color.WHITE);
         Raylib.DrawTexture(playerImage, (int)playerRect.x, (int)playerRect.y, Color.WHITE);
         Raylib.DrawText($"{score}", 75, 10, 100, Color.WHITE);
 
-        // if (toutch == true && Raylib.CheckCollisionRecs(exit, playerRect))
-        // {
-        //     death = true;
-        //     lvl1 = false;
-        // }
-
-        if (score >= 5 && hasKey == false)
+        if (score >= 1 && hasKey == false)
         {
             Raylib.DrawTexture(key, 550, 400, Color.WHITE);
 
             if (Raylib.CheckCollisionRecs(keyrect, playerRect))
             {
                 hasKey = true;
+                background = Raylib.LoadTexture("Stage_Basement_room5.png");
+
+
             }
         }
 
@@ -198,7 +205,7 @@ while (!Raylib.WindowShouldClose())
             }
         }
 
-             if (Raylib.CheckCollisionRecs(r2, playerRect))
+        if (Raylib.CheckCollisionRecs(r2, playerRect))
         {
             int cord = generator.Next(800);
             int cord2 = generator.Next(600);
@@ -244,6 +251,14 @@ while (!Raylib.WindowShouldClose())
 
             }
         }
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT))
+        {
+            speed = 15f;
+        }
+        else
+        {
+            speed = 10f;
+        }
 
         if (score2 >= 1 && hasKey2 == false)
         {
@@ -252,6 +267,8 @@ while (!Raylib.WindowShouldClose())
             if (Raylib.CheckCollisionRecs(keyrect, playerRect))
             {
                 hasKey2 = true;
+                background2 = Raylib.LoadTexture("Room3.png");
+
             }
         }
 
@@ -324,6 +341,9 @@ while (!Raylib.WindowShouldClose())
             playerRect = new Rectangle(400, 300, playerImage.width, playerImage.height);
             enemies.RemoveAll(e => e.Edead == false);
             hasKey = false;
+            background = Raylib.LoadTexture("Stage_Basement_room1.png");
+            background2 = Raylib.LoadTexture("Room2.png");
+
 
         }
 
@@ -338,11 +358,7 @@ while (!Raylib.WindowShouldClose())
 static Vector2 ReadMovement(float speed)
 {
     Vector2 movement = new Vector2();
-    if (Raylib.IsKeyDown(KeyboardKey.KEY_S))
-    {
-        movement.Y += speed;
-
-    }
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_S)) { movement.Y += speed; }
     if (Raylib.IsKeyDown(KeyboardKey.KEY_D)) movement.X += speed;
 
     if (Raylib.IsKeyDown(KeyboardKey.KEY_A)) movement.X -= speed;
