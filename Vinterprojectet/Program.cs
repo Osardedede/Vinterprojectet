@@ -110,8 +110,8 @@ while (!Raylib.WindowShouldClose())
 
         if (Raylib.CheckCollisionRecs(r2, playerRect))
         {
-            int cord = generator.Next(800);
-            int cord2 = generator.Next(600);
+            int cord = generator.Next(100,1100);
+            int cord2 = generator.Next(50,700);
             r2 = new Rectangle(cord, cord2, 80, 100);
             score++;
 
@@ -202,13 +202,16 @@ while (!Raylib.WindowShouldClose())
             {
                 // Den här gör vectorn till 1 alltså normalizar
                 lastPlayerDirection = Vector2.Normalize(movement);
+
+                // To normalize a vector, therefore, is to take a vector of any length and, keeping it pointing in 
+                // the same direction, change its length to 1
             }
         }
 
         if (Raylib.CheckCollisionRecs(r2, playerRect))
         {
-            int cord = generator.Next(800);
-            int cord2 = generator.Next(600);
+            int cord = generator.Next(100,1100);
+            int cord2 = generator.Next(50,700);
             r2 = new Rectangle(cord, cord2, 80, 100);
             score2++;
 
@@ -216,12 +219,14 @@ while (!Raylib.WindowShouldClose())
 
         if (Raylib.IsKeyPressed(KeyboardKey.KEY_H))
         {
+            // lägger  till en variabel i listan
             Bullet b1 = new Bullet();
             b1.brect = new Rectangle(playerRect.x, playerRect.y, 50, 30);
             b1.isAlive = true;
             // så att skottet skuts där spelaren kollar
             b1.direction = lastPlayerDirection;
             bullets.Add(b1);
+
 
         }
         // En for loop om att kolla listan och rita skott och kolla vilken riktning dom är/får dom att röra sig
@@ -260,7 +265,7 @@ while (!Raylib.WindowShouldClose())
             speed = 10f;
         }
 
-        if (score2 >= 1 && hasKey2 == false)
+        if (score2 >= 5 && hasKey2 == false)
         {
             Raylib.DrawTexture(key, 550, 400, Color.WHITE);
 
@@ -309,16 +314,12 @@ while (!Raylib.WindowShouldClose())
 
 
 
-        if (playerRect.x <= 90)
-        {
-
-            playerRect.x = 100 + playerRect.height;
-        }
+       
 
         // väggar
-        if (playerRect.x >= 1200) { playerRect.x = 1100 - playerRect.width; }
-        if (playerRect.x <= 0) { playerRect.x = 0; }
-        if (playerRect.y <= 0) { playerRect.y = 750 - playerRect.height; }
+        if (playerRect.x >= 1100) { playerRect.x = 1100 - playerRect.width; }
+        if (playerRect.x <= 100) { playerRect.x = 90 + playerRect.width; }
+        if (playerRect.y - playerRect.height <= 0) { playerRect.y = 0 + playerRect.height; }
         if (playerRect.y + playerRect.height >= 750) { playerRect.y = 750 - playerRect.height; }
 
 
@@ -341,6 +342,7 @@ while (!Raylib.WindowShouldClose())
             playerRect = new Rectangle(400, 300, playerImage.width, playerImage.height);
             enemies.RemoveAll(e => e.Edead == false);
             hasKey = false;
+            hasKey2 = false;
             background = Raylib.LoadTexture("Stage_Basement_room1.png");
             background2 = Raylib.LoadTexture("Room2.png");
 
