@@ -142,9 +142,6 @@ while (!Raylib.WindowShouldClose())
         {
             if (hasKey == true)
             {
-
-                lvl1 = false;
-                lvl2 = true;
                 playerRect.y = 750 - playerRect.height;
                 playerRect.x = 600;
             }
